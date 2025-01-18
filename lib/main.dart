@@ -29,21 +29,16 @@ class MyApp extends ConsumerWidget {
             // You can use the library anywhere in the app even in theme
             theme: ThemeData(
                 primarySwatch: Colors.blue,
-                textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
-
-                colorScheme: const ColorScheme(
-                  brightness: Brightness.light,
-                  primary: Colors.black,
-                  onPrimary: Colors.black,
-                  secondary: Colors.black,
-                  onSecondary: Colors.black,
-                  error: Colors.red,
-                  onError: Colors.white,
-                  background: Colors.white,
-                  onBackground: Colors.black,
-                  surface: Colors.white,
-                  onSurface: Colors.black,
+                textTheme: Typography.englishLike2018.apply(
+                  fontSizeFactor: 1.sp,
+                  bodyColor: Colors.black, // 기본 텍스트 색상을 검은색으로 설정
+                  displayColor: Colors.black, // 제목 텍스트 색상을 검은색으로 설정
                 ),
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.white,
+                  brightness: Brightness.light,
+                ),
+
                 bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent)
             ),
             home: child,
