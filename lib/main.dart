@@ -6,6 +6,7 @@ import 'package:withfesta/Page/CalendarPage.dart';
 import 'package:withfesta/Page/FindPersonPage.dart';
 import 'package:withfesta/Page/SearchPage.dart';
 import 'package:withfesta/mainProvider.dart';
+import 'package:withfesta/screens/job_screen.dart';
 
 void main() {
   runApp(ProviderScope(child:  MyApp()));
@@ -64,7 +65,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   var tapPageList=[
     CalendarPage(),
     SearchPage(),
-    FindPersonpage()
+    JobScreen()
   ];
 
 
