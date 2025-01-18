@@ -1,6 +1,6 @@
 # withfesta
 
-GDGoC Hackaton Backya
+GDGoC Hackathon Backya
 
 ## Getting Started
 
