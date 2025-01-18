@@ -7,57 +7,104 @@ import '../Data/Festival.dart';
 class FestivalDetailPage extends ConsumerWidget {
   final Festival festival;
 
-  const FestivalDetailPage({Key? key, required this.festival}) : super(key: key);
+  const FestivalDetailPage({Key? key, required this.festival})
+      : super(key: key);
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    return  Scaffold(
-      appBar: AppBar(
-        title: Text(festival.fstvlName ?? 'Festival Detail'),
-        backgroundColor: Colors.blue[700],
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(scrolledUnderElevation: 0,
+        backgroundColor: Colors.blue[100],
+        elevation: 0,
+
+        actions: [
+          IconButton(
+            icon: Icon(Icons.mic, color: Colors.black),
+            onPressed: () {
+              // 마이크 기능 구현
+            },
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
+      body: SingleChildScrollView(physics: ClampingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(16),
-              color: Colors.blue[100],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    festival.fstvlName ?? 'Unknown Festival',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue[800]),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 96,
+                  color: Colors.blue[100],
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16,0,16,16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          festival.fstvlName ?? '축제 이름',
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue[800]),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${festival.fstvlStart?.toString().substring(0, 10)} - ${festival.fstvlEnd?.toString().substring(0, 10)}',
-                    style: TextStyle(fontSize: 16, color: Colors.blue[600]),
+                ),
+                Positioned(
+                  top: 20,
+                  right: 16,
+                  child: Container(
+                    width: 140,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: festival.imgUrl != null
+                          ? Image.network(
+                        festival.imgUrl!,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.asset("asset/images/default_fest_img.png"),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Padding(
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoRow(Icons.phone, '연락처', festival.number ?? 'N/A'),
-                  _buildInfoRow(Icons.location_on, '위치', festival.location ?? 'N/A'),
-                  _buildInfoRow(Icons.business, '주최', festival.mnnstNm ?? 'N/A'),
-                  _buildInfoRow(Icons.map, '주소', festival.rdnmadr ?? 'N/A'),
+                  SizedBox(height: 140), // 포스터와 겹치지 않도록 여백 추가
+                  _buildInfoSection('축제 기간', '${_formatDate(festival.fstvlStart)} - ${_formatDate(festival.fstvlEnd)}', Icons.date_range),
+                  _buildInfoSection('위치', festival.location ?? '정보 없음', Icons.location_on),
+                  _buildInfoSection('주소', festival.rdnmadr ?? '정보 없음', Icons.map),
+                  _buildInfoSection('주최', festival.mnnstNm ?? '정보 없음', Icons.business),
+                  _buildInfoSection('연락처', festival.number ?? '정보 없음', Icons.phone),
                   SizedBox(height: 24),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
                         // 예약 또는 추가 정보 페이지로 이동
                       },
-                      child: Text('예약하기'),
+                      child: Text('예약하기', style: TextStyle(fontSize: 20)),
                       style: ElevatedButton.styleFrom(
                         // primary: Colors.blue[700],
-                        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
                     ),
                   ),
@@ -69,29 +116,44 @@ class FestivalDetailPage extends ConsumerWidget {
       ),
     );
   }
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Colors.blue[600], size: 20),
-          SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800]),
-                ),
-                SizedBox(height: 4),
-                Text(value, style: TextStyle(fontSize: 16)),
-              ],
+
+
+  Widget _buildInfoSection(String label, String value, IconData icon) {
+    return Container(color: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: Colors.blue[600], size: 30),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[800]),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    value,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '날짜 정보 없음';
+    return '${date.year}년 ${date.month}월 ${date.day}일';
+  }
+
 }
